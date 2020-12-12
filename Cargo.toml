@@ -4,7 +4,8 @@ version = "0.1.0"
 authors = ["post-rex <post-rex@pm.me>"]
 edition = "2018"
 description = "Tool to download stuff from e621"
-license-file = "LICENCE"
+licence = "GPL-2.0"
+license-file = "LICENSE"
 documentation = "https://docs.rs/e6d"
 repository = "https://github.com/hacker-kobold/e6d"
 
