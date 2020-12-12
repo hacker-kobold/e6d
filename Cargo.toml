@@ -1,0 +1,17 @@
+[package]
+name = "e6d"
+version = "0.1.0"
+authors = ["post-rex <post-rex@pm.me>"]
+edition = "2018"
+
+[dependencies]
+tokio = { version = "0.3.5", features = ["rt", "macros", "rt-multi-thread", "time", "fs"] }
+tokio-compat-02 = "0.1.2"
+chrono = "0.4.19"
+urlencoding = "1.1.1"
+serde = { version = "1.0.118", features = ["derive"] }
+serde_json = "1.0.60"
+strfmt = "0.1.6"
+reqwest = "0.10.9"
+flume = "0.10.0"
+clap = "2"
