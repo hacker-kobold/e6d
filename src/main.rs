@@ -20,6 +20,22 @@ async fn main() {
                 .help("Output directory")
                 .takes_value(true),
         )
+        .arg(
+            clap::Arg::with_name("domain")
+                .long("domain")
+                .takes_value(true)
+                .default_value("www.e621.net")
+                .help("Alternative: www.e926.net")
+                .required(false),
+        )
+        .arg(
+            clap::Arg::with_name("allow-blacklisted")
+                .long("allow-blacklisted")
+                .takes_value(false)
+                .help("This option will enable the e621 by default blacklisted items and tried to resolve them\nDoes not work with --domain")
+                .conflicts_with("domain")
+                .required(false),
+        )
         .get_matches();
     let (dl_queue, dl_receiver) = flume::unbounded();
     let tags = &*Box::leak(
@@ -36,10 +52,23 @@ async fn main() {
             .to_string()
             .into_boxed_str(),
     );
+    let base_url = &*Box::leak(
+        matches
+            .value_of("domain")
+            .unwrap_or("./")
+            .to_string()
+            .into_boxed_str(),
+    );
+    let resolve_blacklisted = matches.occurrences_of("allow-blacklisted") > 0;
     if !Path::new(out_dir).exists() {
         tokio::fs::create_dir_all(out_dir).await.unwrap();
     }
-    tokio::spawn(e621::search_crawl("www.e621.net", &tags, dl_queue));
+    tokio::spawn(e621::search_crawl(
+        base_url,
+        &tags,
+        dl_queue,
+        resolve_blacklisted,
+    ));
     let (rndv_tx, rndv_rx) = flume::bounded::<()>(0);
     for _ in 0..4 {
         let rx = dl_receiver.clone();
